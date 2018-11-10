@@ -1,0 +1,54 @@
+﻿@model Schedule.BLL.DTO.ArrangementDto
+
+@{
+    ViewData["Title"] = "Create an arrangement";
+}
+
+<h2>Create an arrangement</h2>
+
+<h4>In order to make an arrangement in your schedule, please, fill in form</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DateTime" class="control-label"></label>
+                <input asp-for="DateTime" class="form-control" type="date"/>
+                <span asp-validation-for="DateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Complexity" class="control-label"></label>
+                <input asp-for="Complexity" class="form-control" />
+                <span asp-validation-for="Complexity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedSubjectId" class="control-label"></label>
+                @Html.DropDownListFor(e => e.SelectedSubjectId, Model.AvailableSubjects?.Select(e => new SelectListItem() { Text = e.Label, Value = e.Id.ToString() }), "Choose subject for arrangement", null)
+                <span asp-validation-for="SubjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedPersonId" class="control-label"></label>
+                @Html.DropDownListFor(e => e.SelectedPersonId, Model.AvailablePeople?.Select(e => new SelectListItem() { Text = e.ShortDescription, Value = e.Id.ToString() }), "Choose person for arrangement", null)
+                <span asp-validation-for="SubjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @for (var i = 0; i < Model.AvailableTags.Count(); i++)
+                {
+                    <input hidden name="AvailableTags[@i].TagId" value="@Model.AvailableTags.ElementAt(i).TagId" />
+                    <input hidden name="AvailableTags[@i].Content" value="@Model.AvailableTags.ElementAt(i).Content"/>
+                    <input data-val="true" data-val-required="The Selected field is required." id="AvailableTags[@i].Selected" name="AvailableTags[@i].Selected" type="checkbox" value="true">
+                    <span>@Model.AvailableTags.ElementAt(i).Content</span>
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

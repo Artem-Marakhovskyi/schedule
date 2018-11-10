@@ -5,55 +5,61 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Schedule.BLL;
-using Schedule.Data;
+using Schedule.BLL.DTO;
 
 namespace Schedule.API.Controllers
 {
-    public class PersonController : Controller
+    public class TagController : Controller
     {
-        private PersonService _service;
+        private readonly TagService _service;
 
-        public PersonController(
-            PersonService service)
+        public TagController(TagService service)
         {
             _service = service;
         }
 
-        // GET: Person
+        // GET: Tag
         public async Task<ActionResult> Index()
         {
-            var people = await _service.GetAsync();
-            return View(people);
+            var tags = await _service.GetAsync();
+            return View(tags);
         }
 
-        // GET: Person/Details/5
+        // GET: Tag/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Person/CreateAsync
+        // GET: Tag/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Person/CreateAsync
+        // POST: Tag/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Person person)
+        public async Task<ActionResult> Create(TagDto tagDto)
         {
-            await _service.SaveAsync(person);
-            return Redirect(nameof(Index));
+            try
+            {
+                await _service.CreateAsync(tagDto);
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
         }
 
-        // GET: Person/Edit/5
+        // GET: Tag/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Person/Edit/5
+        // POST: Tag/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -70,13 +76,13 @@ namespace Schedule.API.Controllers
             }
         }
 
-        // GET: Person/Delete/5
+        // GET: Tag/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Person/Delete/5
+        // POST: Tag/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

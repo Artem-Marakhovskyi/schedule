@@ -9,51 +9,51 @@ using Schedule.Data;
 
 namespace Schedule.API.Controllers
 {
-    public class PersonController : Controller
+    public class SubjectController : Controller
     {
-        private PersonService _service;
+        private readonly SubjectService _service;
 
-        public PersonController(
-            PersonService service)
+        public SubjectController(
+            SubjectService service)
         {
             _service = service;
         }
 
-        // GET: Person
+        // GET: Subject
         public async Task<ActionResult> Index()
         {
-            var people = await _service.GetAsync();
-            return View(people);
+            var subjects = await _service.GetAsync();
+            return View(subjects);
         }
 
-        // GET: Person/Details/5
+        // GET: Subject/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Person/CreateAsync
+        // GET: Subject/CreateAsync
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Person/CreateAsync
+        // POST: Subject/CreateAsync
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Person person)
+        public async Task<ActionResult> Create(Subject subject)
         {
-            await _service.SaveAsync(person);
-            return Redirect(nameof(Index));
+            await _service.CreateAsync(subject);
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Person/Edit/5
+        // GET: Subject/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Person/Edit/5
+        // POST: Subject/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -70,13 +70,13 @@ namespace Schedule.API.Controllers
             }
         }
 
-        // GET: Person/Delete/5
+        // GET: Subject/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Person/Delete/5
+        // POST: Subject/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

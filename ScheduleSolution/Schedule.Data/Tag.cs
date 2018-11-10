@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Schedule.Data.Context;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,6 @@ namespace Schedule.Data
 
         public string Content { get; set; }
 
-        public virtual List<Arrangement> Arrangements { get; set; }
+        public virtual ICollection<TagArrangement> TagArrangements { get; set; }
     }
 }

@@ -1,0 +1,97 @@
+﻿@model Schedule.API.Models.ArrangementListViewModel
+
+@{
+    ViewData["Title"] = "List of arrangements";
+}
+
+<h2>List of arrangements</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-action="Index" method="get">
+    <h4>Apply filters to arrangements</h4>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+        <label asp-for="SearchBag.PersonId" class="control-label"></label>
+        @Html.DropDownListFor(e => e.SearchBag.PersonId, Model.SearchBag.People.Select(e => new SelectListItem() {Text = e.ShortDescription, Value = e.Id.ToString()}), "Choose person for search", null)
+        
+        <label asp-for="SearchBag.SubjectId" class="control-label"></label>
+        @Html.DropDownListFor(e => e.SearchBag.SubjectId, Model.SearchBag.Subjects.Select(e => new SelectListItem() {Text = e.Label, Value = e.Id.ToString()}), "Choose subject for search", null)
+
+        <label asp-for="SearchBag.DateTime" class="control-label"></label>
+        <input asp-for="SearchBag.DateTime"  type="date"/>
+   
+        <label asp-for="SearchBag.Complexity" class="control-label"></label>
+        <input asp-for="SearchBag.Complexity" />
+
+
+        <label asp-for="SearchBag.IsHandled" class="control-label"></label>
+        <input asp-for="SearchBag.IsHandled" type="checkbox"/>
+
+        <label asp-for="SearchBag.OrderProperty" class="control-label"></label>
+        @Html.DropDownListFor(e => e.SearchBag.OrderProperty, Model.SearchBag.OrderProps.Select(e => new SelectListItem() { Text = e, Value = e }), "Choose sort criterion", null)
+
+
+    <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-default"/>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().DateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().IsHandled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().Complexity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().SelectedPerson)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().Tags)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ViewArrangementDtos) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeRepresentation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsHandled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Complexity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SelectedPerson)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TagsRepresentation)
+            </td>
+            <td>
+                @Html.ActionLink("Handle", "Handle", new { controllerName = "Arrangement", actionName="Handle", id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

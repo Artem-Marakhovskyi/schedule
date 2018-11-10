@@ -7,8 +7,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Schedule.BLL;
+using Schedule.Data.Context;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace Schedule.API
 {
@@ -31,6 +36,16 @@ namespace Schedule.API
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddScoped<PersonService>();
+            services.AddScoped<ArrangementService>();
+            services.AddScoped<TagService>();
+            services.AddScoped<TagArrangementService>();
+            services.AddScoped<SubjectService>();
+
+            string connection = Configuration.GetConnectionString("ScheduleConnection");
+            
+            services.AddDbContext<ScheduleContext>(options =>
+                options.UseSqlServer(connection));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -56,7 +71,7 @@ namespace Schedule.API
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Arrangement}/{action=Index}/{id?}");
             });
         }
     }

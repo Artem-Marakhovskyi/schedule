@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Schedule.Data
 {
@@ -22,6 +21,6 @@ namespace Schedule.Data
 
         public virtual Subject Subject { get; set; }
 
-        public virtual List<Tag> Tags { get; set; }
+        public virtual ICollection<TagArrangement> TagArrangements { get; set; }
     }
 }
