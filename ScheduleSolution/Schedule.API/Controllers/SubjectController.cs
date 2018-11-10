@@ -25,26 +25,39 @@ namespace Schedule.API.Controllers
             var subjects = await _service.GetAsync();
             return View(subjects);
         }
+        
 
-        // GET: Subject/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Subject/CreateAsync
+        
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Subject/CreateAsync
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Subject subject)
         {
-            await _service.CreateAsync(subject);
-            return RedirectToAction(nameof(Index));
+            if (string.IsNullOrWhiteSpace(subject.Name))
+            {
+                ModelState.AddModelError(nameof(subject.Name), "Name is empty");
+            }
+
+            if (string.IsNullOrWhiteSpace(subject.Description))
+            {
+                ModelState.AddModelError(nameof(subject.Description), "Description is empty");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _service.CreateAsync(subject);
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return View(subject);
+            }
+
         }
 
         // GET: Subject/Edit/5

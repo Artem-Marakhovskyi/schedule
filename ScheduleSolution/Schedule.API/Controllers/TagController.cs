@@ -24,13 +24,7 @@ namespace Schedule.API.Controllers
             var tags = await _service.GetAsync();
             return View(tags);
         }
-
-        // GET: Tag/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
+        
         // GET: Tag/Create
         public ActionResult Create()
         {
@@ -44,54 +38,21 @@ namespace Schedule.API.Controllers
         {
             try
             {
-                await _service.CreateAsync(tagDto);
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                if (string.IsNullOrWhiteSpace(tagDto.Content))
+                {
+                    ModelState.AddModelError(nameof(tagDto.Content), "Empty tag content");
+                }
 
-        // GET: Tag/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+                if (ModelState.IsValid)
+                {
+                    await _service.CreateAsync(tagDto);
 
-        // POST: Tag/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Tag/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Tag/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View(tagDto);
+                }
             }
             catch
             {

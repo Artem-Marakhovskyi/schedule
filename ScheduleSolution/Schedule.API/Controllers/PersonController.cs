@@ -25,13 +25,7 @@ namespace Schedule.API.Controllers
             var people = await _service.GetAsync();
             return View(people);
         }
-
-        // GET: Person/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
+        
         // GET: Person/CreateAsync
         public ActionResult Create()
         {
@@ -43,54 +37,29 @@ namespace Schedule.API.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Person person)
         {
-            await _service.SaveAsync(person);
-            return Redirect(nameof(Index));
-        }
-
-        // GET: Person/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Person/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
+            if (string.IsNullOrWhiteSpace(person.AlternativeEgo))
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(person.AlternativeEgo), "Alternative ego is empty");
             }
-            catch
+            if (string.IsNullOrWhiteSpace(person.Name))
             {
-                return View();
+                ModelState.AddModelError(nameof(person.Name), "Name is empty");
+            }
+            if (string.IsNullOrWhiteSpace(person.Surname))
+            {
+                ModelState.AddModelError(nameof(person.Surname), "Surname is empty");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _service.SaveAsync(person);
+                return Redirect(nameof(Index));
+            }
+            else
+            {
+                return View(person);
             }
         }
-
-        // GET: Person/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Person/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }

@@ -76,60 +76,36 @@ namespace Schedule.API.Controllers
         {
             try
             {
-                await _arrangementService.CreateOrUpdateAsync(arrangementDto);
+                if (arrangementDto.SelectedPersonId == 0)
+                {
+                    ModelState.AddModelError(nameof(arrangementDto.SelectedPersonId), "Please select person");
+                }
+                if (arrangementDto.SelectedSubjectId == 0)
+                {
+                    ModelState.AddModelError(nameof(arrangementDto.SelectedSubjectId), "Please select subject");
+                }
 
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    await _arrangementService.CreateOrUpdateAsync(arrangementDto);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var emptyArrangement = _arrangementService.Empty();
+                    arrangementDto.AvailableTags = emptyArrangement.AvailableTags;
+                    arrangementDto.AvailablePeople = emptyArrangement.AvailablePeople;
+                    arrangementDto.AvailableSubjects = emptyArrangement.AvailableSubjects;
+
+                    return View(arrangementDto);
+                }
             }
             catch
             {
                 return View();
             }
         }
-
-        // GET: Arrangement/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Arrangement/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Arrangement/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Arrangement/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }
