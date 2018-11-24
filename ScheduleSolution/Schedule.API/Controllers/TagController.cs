@@ -38,11 +38,6 @@ namespace Schedule.API.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(tagDto.Content))
-                {
-                    ModelState.AddModelError(nameof(tagDto.Content), "Empty tag content");
-                }
-
                 if (ModelState.IsValid)
                 {
                     await _service.CreateAsync(tagDto);

@@ -29,30 +29,45 @@ namespace Schedule.API.Controllers
         // GET: Arrangement
         public async Task<ActionResult> Index(ArrangementListViewModel arrangementListViewModel = null)
         {
+
             var arrangementSearchBag = arrangementListViewModel?.SearchBag;
 
-            return View(
-                new ArrangementListViewModel()
+            ArrangementSearchContext searchContext = null;
+            if (ModelState.IsValid)
+            {
+                searchContext = new ArrangementSearchContext()
                 {
-                    SearchBag = new ArrangementSearchBag()
-                    {
-                        Subjects = (await _subjectService.GetAsync()).Select(e => new SubjectDto() { Id = e.Id, Label = e.Name}),
-                        People = (await _personService.GetAsync()).Select(e => new PersonDto() { Id = e.Id, ShortDescription = $"{e.Name} {e.Surname}, {e.AlternativeEgo}"})
-                    },
-                    ViewArrangementDtos = await _arrangementService.GetAsync(
-                        new ArrangementSearchContext()
-                        {
-                            Complexity = arrangementSearchBag?.Complexity,
-                            DateTime = arrangementSearchBag?.DateTime,
-                            IsHandled = arrangementSearchBag?.IsHandled,
-                            OrderByCriterion = arrangementSearchBag?.OrderExpression,
-                            PersonId = arrangementSearchBag?.PersonId,
-                            SubjectId = arrangementSearchBag?.SubjectId,
-                            Tags = arrangementSearchBag?.Tags
-                        })
-                });
+                    Complexity = arrangementSearchBag?.Complexity,
+                    DateTime = arrangementSearchBag?.DateTime,
+                    IsHandled = arrangementSearchBag?.IsHandled,
+                    OrderByCriterion = arrangementSearchBag?.OrderExpression,
+                    PersonId = arrangementSearchBag?.PersonId,
+                    SubjectId = arrangementSearchBag?.SubjectId,
+                    Tags = arrangementSearchBag?.Tags
+                };
+            }
+
+            var model = new ArrangementListViewModel()
+            {
+                SearchBag = new ArrangementSearchBag()
+                {
+                    Subjects = (await _subjectService.GetAsync()).Select(e => new SubjectDto()
+                        {Id = e.Id, Label = e.Name}),
+                    People = (await _personService.GetAsync()).Select(e => new PersonDto()
+                        {Id = e.Id, ShortDescription = $"{e.Name} {e.Surname}, {e.AlternativeEgo}"})
+                },
+                ViewArrangementDtos = await _arrangementService.GetAsync(searchContext)
+            };
+            
+            return View(model);
         }
-        
+    
+
+        public async Task<ActionResult> Edit(int id)
+        {
+            return View("Create", await _arrangementService.GetAsync(id));
+        }
+
         // GET: Arrangement/Create
         public ActionResult Create()
         {
@@ -76,15 +91,6 @@ namespace Schedule.API.Controllers
         {
             try
             {
-                if (arrangementDto.SelectedPersonId == 0)
-                {
-                    ModelState.AddModelError(nameof(arrangementDto.SelectedPersonId), "Please select person");
-                }
-                if (arrangementDto.SelectedSubjectId == 0)
-                {
-                    ModelState.AddModelError(nameof(arrangementDto.SelectedSubjectId), "Please select subject");
-                }
-
                 if (ModelState.IsValid)
                 {
                     await _arrangementService.CreateOrUpdateAsync(arrangementDto);

@@ -24,7 +24,7 @@
    
         <label asp-for="SearchBag.Complexity" class="control-label"></label>
         <input asp-for="SearchBag.Complexity" />
-
+        <span asp-validation-for="SearchBag.Complexity" class="text-danger"></span>
 
         <label asp-for="SearchBag.IsHandled" class="control-label"></label>
         <input asp-for="SearchBag.IsHandled" type="checkbox"/>
@@ -62,6 +62,7 @@
                 @Html.DisplayNameFor(model => model.ViewArrangementDtos.First().Tags)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -91,6 +92,9 @@
             <td>
                 @Html.ActionLink("Handle", "Handle", new { controllerName = "Arrangement", actionName="Handle", id = item.Id })
             </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { controllerName = "Arrangement", actionName = "Edit", id = item.Id })
+             </td>
         </tr>
 }
     </tbody>

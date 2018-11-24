@@ -79,6 +79,30 @@ namespace Schedule.BLL
                 }).AsQueryable().OrderBy(searchContext.OrderByCriterion).ToList();
         }
 
+        public async Task<ArrangementDto> GetAsync(int id)
+        {
+            var arrangement = _context.Arrangements.Include(e => e.TagArrangements).First(e => id == e.Id);
+            var tagIds = arrangement.TagArrangements.Select(e => e.TagId);
+            var person = (await _personService.GetAsync(e => e.Id == arrangement.PersonId)).First();
+            var subject = (await _subjectService.GetAsync(e => e.Id == arrangement.SubjectId)).First();
+            var tags = (await _tagService.GetAsync(e => tagIds.Contains(e.Id))).Select(e => e.Id);
+
+            var current = Empty();
+            current.Id = arrangement.Id;
+            current.Complexity = arrangement.Complexity;
+            current.DateTime = arrangement.DateTime;
+            current.IsHandled = arrangement.IsHandled;
+            current.SelectedPersonId = person.Id;
+            current.SelectedSubjectId = subject.Id;
+            current.AvailableTags = current.AvailableTags.ToList();
+            foreach (var t in current.AvailableTags)
+            {
+                t.Selected = tags.Contains(t.TagId);
+            }
+
+            return current;
+        }
+
         public void Handle(int id)
         {
             _context.Arrangements.First(e => e.Id == id).IsHandled = true;

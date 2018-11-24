@@ -37,19 +37,6 @@ namespace Schedule.API.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Person person)
         {
-            if (string.IsNullOrWhiteSpace(person.AlternativeEgo))
-            {
-                ModelState.AddModelError(nameof(person.AlternativeEgo), "Alternative ego is empty");
-            }
-            if (string.IsNullOrWhiteSpace(person.Name))
-            {
-                ModelState.AddModelError(nameof(person.Name), "Name is empty");
-            }
-            if (string.IsNullOrWhiteSpace(person.Surname))
-            {
-                ModelState.AddModelError(nameof(person.Surname), "Surname is empty");
-            }
-
             if (ModelState.IsValid)
             {
                 await _service.SaveAsync(person);

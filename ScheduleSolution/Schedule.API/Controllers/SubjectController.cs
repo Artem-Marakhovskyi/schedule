@@ -38,16 +38,6 @@ namespace Schedule.API.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(Subject subject)
         {
-            if (string.IsNullOrWhiteSpace(subject.Name))
-            {
-                ModelState.AddModelError(nameof(subject.Name), "Name is empty");
-            }
-
-            if (string.IsNullOrWhiteSpace(subject.Description))
-            {
-                ModelState.AddModelError(nameof(subject.Description), "Description is empty");
-            }
-
             if (ModelState.IsValid)
             {
                 await _service.CreateAsync(subject);

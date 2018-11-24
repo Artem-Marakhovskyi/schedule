@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Schedule.Data.Validation;
 
 namespace Schedule.BLL.DTO
 {
@@ -9,8 +8,12 @@ namespace Schedule.BLL.DTO
     {
         public int TagId { get; set; }
 
+        [Required]
+        [DisplayName("Content")]
+        [OnlyText(ErrorMessage = "Only text is allowed")]
+        [MaxLength(20, ErrorMessage = "Too long value, please cut up to 20 symbols")]
         public string Content { get; set; }
-
+            
         public bool Selected { get; set; }
     }
 }
